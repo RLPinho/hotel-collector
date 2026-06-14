@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hotel Collector</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===============================================================================
+   LAYOUT GERAL CSS
+==================================================================================== */
+
+
+        body {
+
+            margin: 0;
+            font-family: 'Segoe UI', Inter, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .topbar input {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5f5;
+        }
+
+        .topbar button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            transition: all 0.25s;
+        }
+
+        .topbar button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .topbar .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #5e3f61;
+            box-shadow: 0 0 0 3px rgba(94, 63, 97, 0.1);
+        }
+
+        button {
+            padding: 10px 16px;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(135deg, #5e3f61, #6e4f71);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+            background: white;
+            margin: 3px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 160px;
+            background: linear-gradient(180deg, #1e1b2e, #2a2438);
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar div {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .sidebar div:hover {
+            background: #5e3f61;
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        /* Main */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 50px;
+            /* altura da topbar */
+        }
+
+        /* Topbar */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 194px;
+            right: 0;
+            z-index: 1000;
+
+            border-radius: 15px;
+            margin: 3px 10px 0 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            backdrop-filter: blur(10px);
+
+            padding: 12px 20px;
+
+            background: linear-gradient(135deg, #5e3f61, #6e4f71);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 12px 20px 20px 20px;
+            border-radius: 15px;
+            margin-bottom: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #5e3f61;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card.problem {
+            border-left: 6px solid #dc2626;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            height: 100%;
+        }
+
+        .hotel-list {
+            width: 150px;
+            min-width: 150px;
+            background: white;
+            overflow: auto;
+        }
+
+        .hotel-form {
+            flex: 1;
+            padding: 15px;
+            overflow: auto;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* ===== HOTEL LIST UX ===== */
+        .hotel-item {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .hotel-item:hover {
+            background: #eef2ff;
+        }
+
+        .hotel-item.active {
+            background: #6366f1;
+            color: white;
+        }
+
+        button {
+            transition: 0.2s;
+        }
+
+
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #b91c1c);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .mk-grid input {
+            width: 95%;
+            justify-self: start;
+        }
+
+        .stat p {
+            font-size: 28px;
+            font-weight: bold;
+            color: #6366f1;
+        }
+
+        /* ===== CONFIG CHECKBOXES (NOVO LAYOUT) ===== */
+
+        .config-grid {
+            display: flex;
+            gap: 40px;
+            margin-top: 10px;
+        }
+
+        .check-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .check-col input {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        /* 🔥 destaque backup */
+        .check-col.highlight span {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .check-col span {
+            font-weight: 500;
+        }
+
+        .config-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .check-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .check-line.last {
+            margin-left: auto;
+        }
+
+
+        .check-line input {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* destaque backup */
+        .check-line.highlight span {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .credentials {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .cred-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cred-line label {
+            min-width: 140px;
+            font-size: 14px;
+        }
+
+        .cred-line input {
+            flex: 1;
+        }
+
+        .config-box {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: nowrap;
+
+            margin-top: 15px;
+            /* 🔥 espaço acima */
+            padding-top: 10px;
+            /* opcional (mais ar) */
+            border-top: 1px solid #e2e8f0;
+            /* opcional (fica profissional) */
+        }
+
+        .check-line {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            /* 🔥 impede "Backup BD" de partir */
+        }
+
+        /* checkbox */
+        .check-line input {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* destaque backup */
+        .check-line.danger span {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .pc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .pc-table th {
+            background: #3b82f6;
+            color: white;
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        .pc-table td {
+            border: 1px solid #e2e8f0;
+            padding: 4px;
+        }
+
+        .pc-table input,
+        .pc-table select {
+            width: 100%;
+            border: none;
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .sidebar input {
+            background: #020617;
+            color: white;
+            border: 1px solid #334155;
+        }
+
+        .sidebar input::placeholder {
+            color: #94a3b8;
+        }
+
+        .sidebar input:focus {
+            border-color: #6366f1;
+            background: #020617;
+        }
+
+        .sidebar input {
+            background: #020617;
+            border: 1px solid #334155;
+            margin-bottom: 15px;
+        }
+
+        #notes {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .pms-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            /* 🔥 menos largo */
+            grid-template-rows: auto auto;
+            /* 🔥 deixa o browser alinhar naturalmente */
+            gap: 10px;
+            /* igual ao resto do form */
+            /* 🔥 ajuste fino */
+            gap: 6px;
+            /* 🔥 menos espaço */
+        }
+
+        #pmsType,
+        #pmsVersion {
+            height: auto;
+            width: 95%;
+            /* 🔥 ajusta aqui */
+            /* 🔥 volta ao padrão */
+            padding: 10px;
+            /* igual aos outros inputs */
+        }
+
+
+
+        #pmsGlobal {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+
+            height: 70px;
+            /* 🔥 ajusta aqui (antes estava maior) */
+            resize: none;
+        }
+
+        .mk-options {
+            justify-content: space-between;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mk-line input[type="checkbox"] {
+            justify-self: end;
+            margin-right: 280px;
+            /* 🔥 ajusta aqui */
+        }
+
+
+        .mk-line {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            align-items: center;
+            gap: 0px;
+        }
+
+        .mk-radio {
+            display: flex;
+            gap: 20px;
+        }
+
+        .mk-radio label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mk-line label {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<!-- =============================================================================================
+   HTML
+================================================================================================ -->
+
+
+
+
+
+
+<body>
+
+
+
+    <div class="app">
+
+        <!-------------------------- SIDEBAR -------------------------------------->
+        <aside class="sidebar">
+            <h2>🏨 Hotel</h2>
+
+            <input id="searchInput" placeholder="🔍 Procurar..." oninput="searchHotel()"
+                style="width:100%; margin:10px 0; padding:6px; border-radius:6px; border:none;">
+
+
+
+
+            <nav>
+                <div onclick="showPage('dashboard')">📊 Dashboard</div>
+                <div onclick="showPage('hotels')">🏨 Hotéis</div>
+                <div onclick="showPage('stats')">📈 Estatísticas</div>
+
+            </nav>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!---- TOPBAR --------------------------------------------------------->
+            <header class="topbar">
+
+
+
+
+                <div>
+                    <button onclick="newHotel()">➕ Novo</button>
+                    <button onclick="saveHotel()">💾 Guardar</button>
+                    <button onclick="exportData()">📊 Export</button>
+                    <button onclick="importData()">📂 Import</button>
+                    <button onclick="deleteHotel()" class="btn-danger">🗑️ Eliminar</button>
+
+
+                </div>
+            </header>
+
+            <!---------------- DASHBOARD --------------------------------------------->
+            <section id="dashboard" class="page">
+                <h1>📊 Dashboard</h1>
+
+                <div class="cards">
+
+                    <div class="card stat">
+                        <h3>Total Hotéis</h3>
+                        <p id="statTotal">0</p>
+                    </div>
+
+                    <div class="card stat">
+                        <h3>SQL Server</h3>
+                        <p id="statSQL">0</p>
+                    </div>
+
+                    <div class="card stat">
+                        <h3>Mobile Key</h3>
+                        <p id="statMobile">0</p>
+                    </div>
+
+                    <div class="card stat">
+                        <h3>Access</h3>
+                        <p id="statAccess">0</p>
+                    </div>
+
+
+                </div>
+            </section>
+
+            <!------------------- STATS ------------------------------------------->
+            <section id="stats" class="page">
+
+                <h1>📈 Estatísticas</h1>
+
+                <div class="card problem">
+                    <h3>❌ Hotéis com problemas críticos</h3>
+                    <p id="statNoDB">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Lista de Hotéis com Problemas</h3>
+                    <div id="noDbList"></div>
+                </div>
+
+                <div class="card">
+                    <h3>⚠️ Hotéis com versão antiga (5.7.32.52)</h3>
+                    <div id="oldVersionList"></div>
+                </div>
+
+
+
+
+            </section>
+
+            <!------------------- HOTELS ------------------------------------------->
+            <section id="hotels" class="page">
+
+                <div class="layout">
+
+                    <!---------------------- LIST ----------------------------->
+                    <div class="hotel-list" id="hotelsList"></div>
+
+                    <!---------------------- FORM ---------------------------->
+                    <div class="hotel-form">
+
+                        <!---------------- INFO -------------------------------------------------->
+                        <div class="card">
+                            <h2>🏢 Informações do Hotel</h2>
+
+                            <div class="grid-2">
+                                <input id="hotelName" placeholder="Nome do Hotel">
+                                <input id="hotelNumber" placeholder="Número">
+                            </div>
+                        </div>
+
+                        <!----------- SMART HOTEL ------------------------------------->
+                        <div class="card">
+                            <h2>🔐 SmartHotel</h2>
+
+                            <!-- CONFIG -->
+                            <div class="grid-3">
+
+                                <select id="shVersion">
+                                    <option value="">Versão</option>
+                                    <option>5.7.32.52</option>
+                                    <option>5.7.32.96</option>
+                                    <option>5.7.32.124</option>
+                                    <option>5.7.32.124 build</option>
+                                </select>
+
+                                <select id="slepMode">
+                                    <option value="">SLEP</option>
+                                    <option value="None">Sem SLEP Instalado</option> <!-- 🔥 NOVO -->
+                                    <option value="Standalone">SLEP Standalone</option>
+                                    <option value="Full">SLEP Completo</option>
+                                    <option value="Full+KM">SLEP Completo + KM</option>
+                                </select>
+
+                                <select id="lockModel">
+                                    <option value="">Modelo Lock</option>
+                                    <option>Classic</option>
+                                    <option>Elegance</option>
+                                    <option>Omnitec</option>
+                                </select>
+
+                            </div>
+
+                            <!----------------- CREDENCIAIS --------------------------->
+                            <h4>Credenciais</h4>
+
+                            <div class="grid-2">
+                                <input id="lockUsername" placeholder="User Operador">
+                                <div style="display:flex; gap:5px;">
+                                    <input id="lockPassword" placeholder="Password" type="password">
+                                    <button type="button" onclick="togglePassword('lockPassword')">👁️</button>
+                                </div>
+                            </div>
+
+                            <!------------- FLAGS ------------------------->
+
+
+                            <div class="config-box">
+
+                                <div class="check-line">
+                                    <input type="checkbox" id="hasElevator">
+                                    <span>🏢 Elevador</span>
+                                </div>
+
+                                <div class="check-line">
+                                    <input type="checkbox" id="hasSDK">
+                                    <span>🧩 SDK</span>
+                                </div>
+
+                                <div class="check-line danger">
+                                    <input type="checkbox" id="hasBackup">
+                                    <span>💾 Backup BD</span>
+                                </div>
+
+                            </div>
+
+
+                            <!-- FECHA SmartHotel -->
+                            <!----------------- Base de dados ------------------------------------>
+                            <div class="card" style="margin-top:30px;">
+                                <h2>🗄️ Base de Dados</h2>
+
+                                <div class="grid-2">
+                                    <select id="dbType">
+                                        <option value="">Tipo Base Dados</option>
+                                        <option value="SQL Server">SQL Server</option>
+                                        <option value="Access">Access</option>
+                                    </select>
+                                    <input id="sqlVersion" placeholder="Versão SQL Server">
+                                </div>
+
+
+                                <div class="grid-2">
+                                    <input id="sqlInstance" placeholder="Nome Instância SQL">
+                                    <input id="dbUser" placeholder="SQL User">
+                                </div>
+
+
+                                <div class="grid-2">
+                                    <input id="dbHostname" placeholder="Hostname Server">
+                                    <div style="display:flex; gap:5px;">
+                                        <input id="dbPass" placeholder="SQL Password" type="password">
+                                        <button type="button" onclick="togglePassword('dbPass')">👁️</button>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="grid-2">
+                                    <input id="dbIp" placeholder="IP Server">
+
+
+
+                                    <select id="windowsAuth">
+                                        <option value="">Windows Authentication</option>
+                                        <option value="Yes">Sim</option>
+                                        <option value="No">Não</option>
+                                    </select>
+
+
+
+
+                                </div>
+                            </div>
+
+
+
+
+                            <!----------------- PC Clientes ---------------------------->
+
+                            <div class="card">
+                                <h2>💻 PC Clientes</h2>
+                                <button onclick="addPcRow()">➕ Adicionar PC</button>
+
+                                <table class="pc-table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>PC</th>
+                                            <th>IP</th>
+                                            <th>Hostname</th>
+                                            <th>Encoder Modelo</th>
+                                            <th>Standalone</th>
+                                            <th>IP Encoder</th>
+                                            <th>User</th>
+                                            <th>Password</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pcTableBody">
+                                        <!-- JS vai gerar linhas -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+
+                            <!--------------- PMS ----------------------------->
+                            <div class="card">
+                                <h2>🖥️ PMS</h2>
+
+                                <div class="pms-grid">
+
+                                    <!-- esquerda -->
+                                    <input id="pmsType" placeholder="Tipo PMS">
+                                    <input id="pmsVersion" placeholder="Versão PMS">
+
+                                    <!-- direita (grande) -->
+                                    <textarea id="pmsGlobal" placeholder="Global Settings" spellcheck="false"
+                                        data-gramm="false">
+</textarea>
+
+                                </div>
+
+                            </div>
+                            <!------------ MOBILE ----------------------->
+                            <!------------ MOBILE ----------------------->
+                            <div class="card">
+                                <h2>📱 Mobile Key</h2>
+
+                                <!-- Licença -->
+                                <div class="mk-line">
+                                    <label>🔑 Licença Mobile Key</label>
+                                    <input type="checkbox" id="mkLicense">
+                                </div>
+
+                                <!-- Opções -->
+                                <div class="mk-options">
+
+                                    <div class="mk-line">
+                                        <label>First Opening</label>
+                                        <div class="mk-radio">
+                                            <label><input type="radio" name="mkFirstOpening" value="Yes"> Sim</label>
+                                            <label><input type="radio" name="mkFirstOpening" value="No"> Não</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mk-line">
+                                        <label>Guest Self Check-in</label>
+                                        <div class="mk-radio">
+                                            <label><input type="radio" name="mkSelfCheckin" value="Yes"> Sim</label>
+                                            <label><input type="radio" name="mkSelfCheckin" value="No"> Não</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mk-line">
+                                        <label>OFD</label>
+                                        <div class="mk-radio">
+                                            <label><input type="radio" name="mkOfd" value="Yes"> Sim</label>
+                                            <label><input type="radio" name="mkOfd" value="No"> Não</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- IPs -->
+                                <div class="grid-2 mk-grid" style="margin-top:10px;">
+                                    <input id="mkIpFirstOpening" placeholder="IP First Opening">
+                                    <input id="mkIpSelfCheckin" placeholder="IP Guest Self Check-in">
+                                </div>
+
+                                <!-- Notas -->
+                                <textarea id="mkNotes" placeholder="Notas Mobile Key..."
+                                    style="margin-top:10px;"></textarea>
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+                        <!-------------------------- NOTES ------------------------->
+                        <div class="card">
+                            <h2>📝 Notas</h2>
+                            <textarea id="notes" rows="6" placeholder="Notas do hotel..."></textarea>
+                        </div>
+                        <!------ Diagnostico ------------------------->
+                        <div class="card">
+                            <h2>🧠 Diagnóstico</h2>
+                            <div id="diagnosisBox"></div>
+                        </div>
+                        <!------ stat ------------------------->
+                        <div class="card stat">
+                            <h3>Storage</h3>
+                            <p id="statStorage">0 KB</p>
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+
+
+    <input type="file" id="importFile" accept=".json" style="display:none">
+
+
+    <script>
+
+
+
+
+
+        /* =============================================================================================
+           VARIÁVEIS GLOBAIS JavaScript
+        ================================================================================================ */
+        window.onerror = function (msg) {
+            alert("Erro JS: " + msg);
+        }
+
+        let hotels = JSON.parse(localStorage.getItem('hotelsData')) || [];
+        let currentHotelId = null;
+
+
+        const API_URL = "https://script.google.com/macros/s/AKfycbykKgqngnULj5PHdQcNoiLhXiqHKaUhO1pHZuIlmR7N_TvE9SDAHffDnc2kowQj/exec";
+
+
+
+
+
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById(page).style.display = 'block';
+        }
+        //=========================ADD PC Cliente ===============================
+        function addPcRow() {
+
+            const body = document.getElementById('pcTableBody');
+            const index = body.children.length + 1;
+
+            const row = `
+    <tr>
+        <td>PC${index}</td>
+        <td><input></td>
+        <td><input></td>
+        <td><input></td>
+        <td>
+            <select>
+                <option>Não</option>
+                <option>Sim</option>
+            </select>
+        </td>
+        <td><input></td>
+        <td><input></td>
+        <td><input></td>
+        <td>
+            <button onclick="removePcRow(this)">❌</button>
+        </td>
+    </tr>
+    `;
+
+            body.insertAdjacentHTML('beforeend', row);
+        }
+        //==================REMOVE PC ===================================
+        function removePcRow(btn) {
+            const row = btn.closest('tr');
+            row.remove();
+
+            updatePcLabels();
+        }
+        //===================Update PC Cliente Label =======================
+        function updatePcLabels() {
+            const rows = document.querySelectorAll('#pcTableBody tr');
+
+            rows.forEach((row, index) => {
+                row.children[0].innerText = "PC" + (index + 1);
+            });
+        }
+        //=====================GENERATE PC Table=============================
+        function generatePcTable(data = []) {
+
+            const body = document.getElementById('pcTableBody');
+            body.innerHTML = '';
+
+            const total = data.length === 0 ? 1 : data.length;
+
+            for (let i = 0; i < total; i++) {
+
+                const row = data[i] || {};
+
+                body.innerHTML += `
+        <tr>
+            <td>PC${i + 1}</td>
+            <td><input value="${row.ip || ''}"></td>
+            <td><input value="${row.hostname || ''}"></td>
+            <td><input value="${row.encoder || ''}"></td>
+            <td>
+                <select>
+                    <option ${row.standalone === "Não" ? "selected" : ""}>Não</option>
+                    <option ${row.standalone === "Sim" ? "selected" : ""}>Sim</option>
+                </select>
+            </td>
+            <td><input value="${row.ipEncoder || ''}"></td>
+            <td><input value="${row.user || ''}"></td>
+            <td>
+    <div style="display:flex; gap:5px;">
+        <input id="pcPass${i}" type="password" value="${row.pass || ''}">
+        <button type="button" onclick="togglePassword('pcPass${i}')">👁️</button>
+    </div>
+</td>
+            <td>
+                <button onclick="removePcRow(this)">❌</button>
+            </td>
+        </tr>
+        `;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        /* =========================
+           DIAGNÓSTICO HOTEL
+        ========================= */
+        function getHotelDiagnosis(h) {
+
+            let issues = [];
+            let score = 100;
+
+            // ❌ Backup
+            if (!h.hasBackup) {
+                issues.push("❌ Sem Backup da base de dados");
+                score -= 25;
+            }
+
+            if (h.slepMode === "None") {
+                issues.push("❌ Sem SLEP instalado");
+                score -= 25;
+            }
+
+
+            // 🔐 SLEP Standalone
+            if (h.slepMode === "Standalone") {
+                issues.push("⚠️ SLEP Standalone (limitado)");
+                score -= 15;
+            }
+
+            // ✅ SLEP Completo
+            if (h.slepMode === "Full") {
+                issues.push("✅ SLEP Completo");
+            }
+
+            // ⚠️ sem versão
+            if (!h.shVersion) {
+                issues.push("⚠️ Sem versão SmartHotel");
+                score -= 10;
+            }
+
+            score = Math.max(score, 0);
+
+            return {
+                issues,
+                score
+            };
+        }
+        //===============================================0
+
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+
+
+
+        /* =========================
+           LISTA DISPLAY DE HOTÉIS
+        ========================= */
+        function displayHotels() {
+            const list = document.getElementById('hotelsList');
+            if (!list) return;
+
+            list.innerHTML = hotels.map(h => `
+        <div class="hotel-item ${currentHotelId === h.id ? 'active' : ''}" onclick="loadHotel(${h.id})">
+            <strong>${h.hotelName || ''}</strong><br>
+            <small>${h.hotelNumber || ''}</small>
+        </div>
+    `).join('');
+        }
+
+        /* =========================
+           NOVO HOTEL
+        ========================= */
+        function newHotel() {
+            currentHotelId = null;
+
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                if (el.type === "checkbox") {
+                    el.checked = false;
+                } else {
+                    el.value = '';
+                }
+            });
+
+            generatePcTable(); // limpa PCs
+        }
+
+        /* ================= PESQUISA =================== */
+        function searchHotel() {
+
+            // 🔥 FORÇA ir para página hotéis
+            showPage('hotels');
+
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+
+            const term = input.value.trim().toLowerCase();
+
+            if (term === '') {
+                displayHotels();
+                return;
+            }
+
+            const filtered = hotels.filter(h => {
+                const name = (h.hotelName || '').toLowerCase();
+                const number = (h.hotelNumber || '').toLowerCase();
+
+                return name.includes(term) || number.includes(term);
+            });
+
+            displayFilteredHotels(filtered);
+        }
+
+        /* ================= FILTRO PESQUISA =================== */
+        function displayFilteredHotels(list) {
+
+            const container = document.getElementById('hotelsList');
+
+            container.innerHTML = list.map(h => `
+        <div class="hotel-item ${currentHotelId === h.id ? 'active' : ''}" onclick="loadHotel(${h.id})">
+            <strong>${h.hotelName}</strong><br>
+            <small>${h.hotelNumber}</small>
+        </div>
+    `).join('');
+        }
+
+        /* ===========LOAD HOTEL===================== */
+        async function loadHotel(id) {
+            const h = hotels.find(h => h.id === id);
+            if (!h) return;
+
+
+            generatePcTable(h.pcs || []);
+
+            currentHotelId = id;
+
+            slepMode.value = h.slepMode || '';
+            hotelName.value = h.hotelName || '';
+            hotelNumber.value = h.hotelNumber || '';
+
+
+            lockUsername.value = h.lockUsername || '';
+
+            dbType.value = h.dbType || '';
+            sqlVersion.value = h.sqlVersion || '';
+            sqlInstance.value = h.sqlInstance || '';
+            dbIp.value = h.dbIp || '';
+            dbHostname.value = h.dbHostname || '';
+            dbUser.value = h.dbUser || '';
+            dbPass.value = h.dbPass || '';
+            windowsAuth.value = h.windowsAuth || '';
+
+
+
+            pmsType.value = h.pmsType || '';
+            pmsVersion.value = h.pmsVersion || '';
+            pmsGlobal.value = h.pmsGlobal || '';
+            pmsGlobal.value = h.pmsGlobal || '';
+            notes.value = h.notes || '';
+            shVersion.value = h.shVersion || '';
+            lockModel.value = h.lockModel || '';
+
+            lockPassword.value = h.lockPassword || '';
+
+            hasElevator.checked = h.hasElevator || false;
+            hasSDK.checked = h.hasSDK || false;
+            hasBackup.checked = h.hasBackup || false;
+
+
+
+            mkLicense.checked = h.mkLicense || false;
+
+            document.querySelectorAll('input[name="mkFirstOpening"]').forEach(r => r.checked = r.value === h.mkFirstOpening);
+            document.querySelectorAll('input[name="mkSelfCheckin"]').forEach(r => r.checked = r.value === h.mkSelfCheckin);
+            document.querySelectorAll('input[name="mkOfd"]').forEach(r => r.checked = r.value === h.mkOfd);
+
+            mkIpFirstOpening.value = h.mkIpFirstOpening || "";
+            mkIpSelfCheckin.value = h.mkIpSelfCheckin || "";
+
+            mkNotes.value = h.mkNotes || "";
+
+            showDiagnosis();
+        }
+        /* =========================
+           GUARDAR HOTEL
+        ========================= */
+        async function saveHotel() {
+
+            const name = hotelName.value.trim();
+            const number = hotelNumber.value.trim();
+
+            // 🚨 VALIDAÇÃO
+            if (!name || !number) {
+                alert("Preenche nome e número do hotel!");
+                return;
+            }
+
+            // 🚨 evitar duplicados
+            const exists = hotels.find(h =>
+                h.hotelNumber === number && h.id !== currentHotelId
+            );
+
+            if (exists) {
+                alert("Já existe um hotel com este número!");
+                return;
+            }
+
+            // 🔥 PCs
+            const pcRows = document.querySelectorAll('#pcTableBody tr');
+            const pcs = [];
+
+            pcRows.forEach(row => {
+                const inputs = row.querySelectorAll('input, select');
+
+                if (inputs[0].value || inputs[1].value || inputs[2].value) {
+                    pcs.push({
+                        ip: inputs[0].value,
+                        hostname: inputs[1].value,
+                        encoder: inputs[2].value,
+                        standalone: inputs[3].value,
+                        ipEncoder: inputs[4].value,
+                        user: inputs[5].value,
+                        pass: inputs[6].value
+                    });
+                }
+            });
+
+            const data = {
+                id: currentHotelId || Date.now(),
+
+                mkLicense: mkLicense.checked,
+                hotelName: hotelName.value,
+                hotelNumber: hotelNumber.value,
+
+                slepMode: slepMode.value,
+
+                lockUsername: lockUsername.value,
+
+                dbType: dbType.value,
+                sqlVersion: sqlVersion.value,
+                sqlInstance: sqlInstance.value,
+                dbIp: dbIp.value,
+                dbHostname: dbHostname.value,
+                dbUser: dbUser.value,
+                dbPass: dbPass.value,
+                windowsAuth: windowsAuth.value,
+
+                pmsType: pmsType.value,
+                pmsVersion: pmsVersion.value,
+                pmsGlobal: pmsGlobal.value,
+                pmsGlobal: pmsGlobal.value,
+                notes: notes.value,
+
+                shVersion: shVersion.value,
+                lockModel: lockModel.value,
+
+                lockPassword: lockPassword.value,
+
+                hasElevator: hasElevator.checked,
+                hasSDK: hasSDK.checked,
+                hasBackup: hasBackup.checked,
+
+
+
+
+
+                mkFirstOpening: document.querySelector('input[name="mkFirstOpening"]:checked')?.value || "",
+                mkSelfCheckin: document.querySelector('input[name="mkSelfCheckin"]:checked')?.value || "",
+                mkOfd: document.querySelector('input[name="mkOfd"]:checked')?.value || "",
+
+                mkIpFirstOpening: mkIpFirstOpening.value,
+                mkIpSelfCheckin: mkIpSelfCheckin.value,
+
+                mkNotes: mkNotes.value,
+
+                pcs: pcs
+            };
+
+            if (currentHotelId) {
+                hotels = hotels.map(h => h.id === currentHotelId ? data : h);
+            } else {
+                hotels.push(data);
+            }
+
+            await saveToCloud(data);
+
+            displayHotels();
+            updateStats();
+            showDiagnosis();
+            updateProblemStats();
+            updateStorage();
+            updateVersionStats();
+
+            alert("✅ Hotel guardado com sucesso!");
+        }
+
+
+        /* =========================
+           EXPORT / BACKUP
+        ========================= */
+        function exportData() {
+
+            if (hotels.length === 0) {
+                alert("Não há dados para exportar!");
+                return;
+            }
+
+            const data = {
+                hotels: hotels,
+                date: new Date().toISOString(),
+                total: hotels.length
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], {
+                type: 'application/json'
+            });
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+
+            const date = new Date().toISOString().split('T')[0];
+
+            a.download = `backup_hotels_${date}.json`;
+            a.click();
+
+            alert("Backup criado com sucesso!");
+        }
+
+        /* =========================
+           IMPORT JSON
+        ========================= */
+        function importData() {
+
+            const fileInput = document.getElementById('importFile');
+
+            fileInput.click();
+
+            fileInput.onchange = function (e) {
+
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+
+                    try {
+                        const data = JSON.parse(e.target.result);
+
+                        let importedHotels = [];
+
+                        // aceita dois formatos
+                        if (Array.isArray(data)) {
+                            importedHotels = data;
+                        } else if (data.hotels) {
+                            importedHotels = data.hotels;
+                        } else {
+                            throw "Formato inválido";
+                        }
+
+                        if (importedHotels.length === 0) {
+                            alert("Ficheiro vazio!");
+                            return;
+                        }
+
+                        // confirmação
+                        if (!confirm(`Importar ${importedHotels.length} hotéis?\n\nIsto pode substituir dados existentes.`)) {
+                            return;
+                        }
+
+                        // substituir dados
+                        hotels = importedHotels;
+
+                        localStorage.setItem('hotelsData', JSON.stringify(hotels));
+
+                        displayHotels();
+                        updateStats();
+                        updateProblemStats();
+                        updateStorage();
+                        updateVersionStats();
+
+
+                        alert("Importação concluída com sucesso!");
+
+                    } catch (err) {
+                        alert("Erro ao importar ficheiro!");
+                        console.error(err);
+                    }
+                };
+
+                reader.readAsText(file);
+            };
+        }
+
+        /* ========================================================
+           ELIMINAR HOTEL
+        ============================================================= */
+        function deleteHotel() {
+
+            if (!currentHotelId) {
+                alert("Seleciona um hotel primeiro!");
+                return;
+            }
+
+            const hotel = hotels.find(h => h.id === currentHotelId);
+
+            if (!hotel) return;
+
+            if (!confirm(`Eliminar hotel "${hotel.hotelName}"?`)) {
+                return;
+            }
+
+            // remover
+            hotels = hotels.filter(h => h.id !== currentHotelId);
+
+            // guardar
+            localStorage.setItem('hotelsData', JSON.stringify(hotels));
+
+            // limpar form
+            newHotel();
+
+            // atualizar lista
+            displayHotels();
+            updateStats();
+            updateProblemStats();
+            updateStorage();
+            updateVersionStats();
+
+            alert("Hotel eliminado!");
+        }
+
+        /* =========================
+           STATS DASHBOARD
+        ========================= */
+        function updateStats() {
+
+            let total = hotels.length;
+            let sql = 0;
+            let access = 0;
+            let mobile = 0;
+
+            hotels.forEach(h => {
+
+                if (h.dbType === "SQL Server") sql++;
+                if (h.dbType === "Access") access++;
+
+                // 🔥 Mobile Key (licença ativa)
+                if (h.mkLicense) {
+                    mobile++;
+                }
+            });
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statSQL').innerText = sql;
+            document.getElementById('statAccess').innerText = access;
+            document.getElementById('statMobile').innerText = mobile;
+        }
+
+
+        /* ========================================================
+           Show Diagnosis
+        ============================================================= */
+        function showDiagnosis() {
+
+
+
+            if (!currentHotelId) return;
+
+            const h = hotels.find(h => h.id === currentHotelId);
+            if (!h) return;
+
+
+            const result = getHotelDiagnosis(h);
+
+            const box = document.getElementById('diagnosisBox');
+
+            let color = "#22c55e"; // verde
+
+            if (result.score < 70) color = "#f59e0b"; // amarelo
+            if (result.score < 40) color = "#dc2626"; // vermelho
+
+            box.innerHTML = `
+        <div style="margin-bottom:10px;">
+            <strong>Score:</strong> 
+            <span style="color:${color}; font-size:20px;">
+                ${result.score}
+            </span>
+        </div>
+
+        <div style="background:#e5e7eb; border-radius:10px; height:10px;">
+            <div style="
+                width:${result.score}%;
+                background:${color};
+                height:10px;
+                border-radius:10px;">
+            </div>
+        </div>
+
+        <ul style="margin-top:10px;">
+            ${result.issues.map(i => `<li>${i}</li>`).join('')}
+        </ul>
+    `;
+        }
+
+
+
+        /* =========================
+           VERSION STATS
+        ========================= */
+        function updateProblemStats() {
+
+            const problemHotels = hotels.filter(h => {
+
+                const result = getHotelDiagnosis(h);
+
+                // 🔥 define problema crítico
+                return result.issues.some(issue =>
+                    issue.includes("❌")
+                );
+
+            });
+
+            // 🔢 contador
+            document.getElementById('statNoDB').innerText = problemHotels.length;
+
+            // 📋 lista
+            const list = document.getElementById('noDbList');
+
+            if (problemHotels.length === 0) {
+                list.innerHTML = "✅ Nenhum hotel com problemas críticos";
+                return;
+            }
+
+            list.innerHTML = `
+        <ul style="line-height:1.8;">
+            ${problemHotels.map(h => `
+                <li>
+                    🏨 <strong>${h.hotelName || 'Sem nome'}</strong>
+                    <span style="color:#64748b;">
+                        (${h.hotelNumber || 'Sem número'})
+                    </span>
+                    <span style="color:#dc2626;"> - ❌ Sem BD</span>
+                </li>
+            `).join('')}
+        </ul>
+    `;
+        }
+
+        /* =========================
+           VERSION STATS
+        ========================= */
+        function updateVersionStats() {
+
+            const oldVersion = hotels.filter(h => h.shVersion === "5.7.32.52");
+
+            const box = document.getElementById('oldVersionList');
+
+            if (oldVersion.length === 0) {
+                box.innerHTML = "✅ Nenhum hotel com versão antiga";
+                return;
+            }
+
+            box.innerHTML = `
+        <ul style="line-height:1.8;">
+            ${oldVersion.map(h => `
+                <li>
+                    🏨 <strong>${h.hotelName || 'Sem nome'}</strong>
+                    <span style="color:#64748b;">
+                        (${h.hotelNumber || 'Sem número'})
+                    </span>
+                    <span style="color:#f59e0b;"> - ⚠️ Versão 5.7.32.52</span>
+                </li>
+            `).join('')}
+        </ul>
+    `;
+        }
+
+
+        /*============update storage========================*/
+        function updateStorage() {
+
+            const data = localStorage.getItem('hotelsData') || '';
+            const size = new Blob([data]).size / 1024;
+
+            document.getElementById('statStorage').innerText = size.toFixed(2) + " KB";
+        }
+        /*======================PC Cliente=====*/
+
+        async function loadFromCloud() {
+
+            const response = await fetch(API_URL);
+
+            const rows = await response.json();
+
+            hotels = rows.map(r => JSON.parse(r.jsonData));
+
+            displayHotels();
+            updateStats();
+            updateProblemStats();
+            updateVersionStats();
+        }
+
+        async function saveToCloud(hotel) {
+
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(hotel)
+            });
+        }
+
+        /* =========================
+           INIT APP
+        ========================= */
+        async function initApp() {
+            hotels = JSON.parse(localStorage.getItem('hotelsData')) || [];
+
+            displayHotels();
+            updateStats();
+            showPage('hotels');
+            updateProblemStats();
+            updateStorage();
+            generatePcTable();
+            updateVersionStats();
+
+            const input = document.getElementById('searchInput');
+            if (input) {
+                input.value = '';
+            }
+            // DEBUG (opcional)
+            console.log("Hotéis:", hotels);
+        }
+
+        window.onload = initApp;
+
+        const seen = new Set();
+        const duplicates = hotels.filter(h => {
+            const key = h.hotelNumber;
+            if (seen.has(key)) return true;
+            seen.add(key);
+            return false;
+        });
+
+        console.log("Duplicados:", duplicates);
+
+
+
+
+    </script>
+
+</body>
+
+</html>
