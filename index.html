@@ -901,7 +901,7 @@
         let currentHotelId = null;
 
 
-        const API_URL = "https://script.google.com/macros/s/AKfycbykKgqngnULj5PHdQcNoiLhXiqHKaUhO1pHZullmR7N_TvE9SDAHffDnc2kowQjTD9ubA/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbw3mKMr-p_3SvhC3b_M7p4YUifS0hUF5qG1ZhsAu9aw-A6US7COkU7ffS9-RJfKEiHQZA/exec";
 
 
 
@@ -1402,7 +1402,7 @@
         /* ========================================================
            ELIMINAR HOTEL
         ============================================================= */
-        function deleteHotel() {
+        async function deleteHotel() {
 
             if (!currentHotelId) {
                 alert("Seleciona um hotel primeiro!");
@@ -1418,7 +1418,13 @@
             }
 
             // remover
-            hotels = hotels.filter(h => h.id !== currentHotelId);
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "delete",
+                    id: currentHotelId
+                })
+            });
 
             // guardar
             localStorage.setItem('hotelsData', JSON.stringify(hotels));
