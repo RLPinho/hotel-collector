@@ -505,12 +505,49 @@
    HTML
 ================================================================================================ -->
 
-
-
-
-
-
 <body>
+
+    <div id="loginScreen" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#1b1630;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99999;
+">
+
+        <div style="
+  background:white;
+  padding:30px;
+  border-radius:15px;
+  width:320px;
+  ">
+
+            <h2>🔐 Hotel Collector</h2>
+
+            <input id="loginUser" placeholder="Username" style="width:100%;margin-bottom:10px;padding:10px;">
+
+            <input id="loginPass" type="password" placeholder="Password"
+                style="width:100%;margin-bottom:10px;padding:10px;">
+
+            <button onclick="login()" style="
+      width:100%;
+      padding:10px;
+      cursor:pointer;
+      ">
+                Entrar
+            </button>
+
+        </div>
+
+    </div>
+
+
+
 
 
 
@@ -901,7 +938,7 @@
         let currentHotelId = null;
 
 
-        const API_URL = "https://script.google.com/macros/s/AKfycbw3mKMr-p_3SvhC3b_M7p4YUifS0hUF5qG1ZhsAu9aw-A6US7COkU7ffS9-RJfKEiHQZA/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwFH5Ybj6JhQGzzcfJbwObwa-7EtJ6AqTgETetxs_h6lgR_ms-xpBLzm5b3yq0z0L8M1g/exec";
 
 
 
@@ -1621,6 +1658,76 @@
             });
         }
 
+
+        async function login() {
+
+            const username =
+                document.getElementById("loginUser").value;
+
+            const password =
+                document.getElementById("loginPass").value;
+
+            const response = await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "login",
+                    username,
+                    password
+                })
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+
+                alert("Login inválido");
+                return;
+            }
+
+            sessionStorage.setItem(
+                "currentUser",
+                JSON.stringify(result)
+            );
+
+            document.getElementById("loginScreen")
+                .style.display = "none";
+
+            initApp();
+        }
+
+        function checkLogin() {
+
+            const user =
+                sessionStorage.getItem("currentUser");
+
+            if (user) {
+
+                document.getElementById("loginScreen")
+                    .style.display = "none";
+
+                initApp();
+
+            } else {
+
+                document.getElementById("loginScreen")
+                    .style.display = "flex";
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /* =========================
            INIT APP
         ========================= */
@@ -1640,7 +1747,7 @@
             console.log("Hotéis:", hotels);
         }
 
-        window.onload = initApp;
+        window.onload = checkLogin;
 
         const seen = new Set();
         const duplicates = hotels.filter(h => {
