@@ -1619,23 +1619,20 @@
            INIT APP
         ========================= */
         async function initApp() {
-            hotels = JSON.parse(localStorage.getItem('hotelsData')) || [];
 
-            displayHotels();
-            updateStats();
+            await loadFromCloud();
+
             showPage('hotels');
-            updateProblemStats();
-            updateStorage();
+
             generatePcTable();
-            updateVersionStats();
 
             const input = document.getElementById('searchInput');
             if (input) {
                 input.value = '';
             }
-            // DEBUG (opcional)
+
             console.log("Hotéis:", hotels);
-        }
+        }S
 
         window.onload = initApp;
 
