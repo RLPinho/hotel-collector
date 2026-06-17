@@ -1599,7 +1599,7 @@
 
             const rows = await response.json();
 
-            hotels = rows.map(r => JSON.parse(r.jsonData));
+            hotels = rows;
 
             displayHotels();
             updateStats();
