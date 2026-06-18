@@ -1418,11 +1418,34 @@ z-index:99999;
 
                             for (const hotel of importedHotels) {
 
-                                await fetch(API_URL, {
-                                    method: "POST",
-                                    body: JSON.stringify(hotel)
-                                });
+                                console.log(
+                                    "A importar:",
+                                    hotel.hotelName,
+                                    hotel.hotelNumber
+                                );
 
+                                try {
+
+                                    const response = await fetch(API_URL, {
+                                        method: "POST",
+                                        body: JSON.stringify(hotel)
+                                    });
+
+                                    console.log(
+                                        "OK:",
+                                        hotel.hotelName
+                                    );
+
+                                } catch (err) {
+
+                                    console.error(
+                                        "ERRO:",
+                                        hotel.hotelName,
+                                        err
+                                    );
+
+                                    break;
+                                }
                             }
 
                             await loadFromCloud();
