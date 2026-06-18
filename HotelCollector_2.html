@@ -1710,8 +1710,16 @@ z-index:99999;
 
             if (user) {
 
+                const currentUser = JSON.parse(user);
+
                 document.getElementById("loginScreen")
                     .style.display = "none";
+
+                if (!currentUser.admin) {
+
+                    document.querySelector(".btn-danger").style.display = "none";
+
+                }
 
                 initApp();
 
@@ -1720,6 +1728,7 @@ z-index:99999;
                 document.getElementById("loginScreen")
                     .style.display = "flex";
             }
+
         }
 
 
