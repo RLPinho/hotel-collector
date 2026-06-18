@@ -577,18 +577,16 @@ z-index:99999;
             <!---- TOPBAR --------------------------------------------------------->
             <header class="topbar">
 
-
-
-
                 <div>
                     <button onclick="newHotel()">➕ Novo</button>
                     <button onclick="saveHotel()">💾 Guardar</button>
                     <button onclick="exportData()">📊 Export</button>
-                    <button onclick="importData()">📂 Import</button>
-                    <button onclick="deleteHotel()" class="btn-danger">🗑️ Eliminar</button>
-
-
+                    <button onclick="importData()">📁 Import</button>
+                    <button onclick="deleteHotel()" class="btn-danger">🗑 Eliminar</button>
                 </div>
+
+                <div id="userInfo"></div>
+
             </header>
 
             <!---------------- DASHBOARD --------------------------------------------->
@@ -1743,6 +1741,16 @@ z-index:99999;
         ========================= */
         async function initApp() {
 
+            const user = JSON.parse(
+                sessionStorage.getItem("currentUser")
+            );
+
+            document.getElementById("userInfo").innerHTML = `
+                👤 ${user.username}
+                <button onclick="logout()">🚪 Logout</button>
+            `;
+
+
             await loadFromCloud();
 
             showPage('hotels');
@@ -1756,6 +1764,18 @@ z-index:99999;
 
             console.log("Hotéis:", hotels);
         }
+
+        function logout() {
+
+            sessionStorage.removeItem("currentUser");
+
+            location.reload();
+
+        }
+
+
+
+
 
         window.onload = checkLogin;
 
