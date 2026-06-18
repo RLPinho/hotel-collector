@@ -580,8 +580,8 @@ z-index:99999;
                 <div>
                     <button onclick="newHotel()">➕ Novo</button>
                     <button onclick="saveHotel()">💾 Guardar</button>
-                    <button onclick="exportData()">📊 Export</button>
-                    <button onclick="importData()">📁 Import</button>
+                    <button id="btnExport" onclick="exportData()">📊 Export</button>
+                    <button id="btnImport" onclick="importData()">📁 Import</button>
                     <button onclick="deleteHotel()" class="btn-danger">🗑 Eliminar</button>
                 </div>
 
@@ -1718,11 +1718,19 @@ z-index:99999;
                 document.getElementById("loginScreen")
                     .style.display = "none";
 
+
+
                 if (!currentUser.admin) {
 
                     document.querySelector(".btn-danger").style.display = "none";
 
+                    document.getElementById("btnExport").style.display = "none";
+
+                    document.getElementById("btnImport").style.display = "none";
+
                 }
+
+
 
                 initApp();
 
